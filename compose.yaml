@@ -1,0 +1,148 @@
+version: '3.8'
+
+services:
+  app:
+    build: ./Dockerfile
+    container_name: app
+    ports:
+      - 8000:8000
+    networks:
+      - surge_pricing_network
+    environment:
+      - REDIS_HOST=redis
+      - PYTHONUNBUFFERED=1
+    command: bash -c "/app/start_services.sh"
+    volumes:
+      - .:/app  # Map the current directory to /app in the container
+
+  cassandra:
+    image: cassandra:5.0.2
+    container_name: cassandra
+    ports:
+      - "9042:9042"
+    environment:
+      CASSANDRA_CLUSTER_NAME: "Test Cluster"
+      CASSANDRA_NUM_TOKENS: 256
+      CASSANDRA_START_RPC: "true"
+      CASSANDRA_LISTEN_ADDRESS: "127.0.0.1"  # Correct this to 0.0.0.0
+      CASSANDRA_RPC_ADDRESS: "0.0.0.0"    # Keep this as 0.0.0.0
+      CASSANDRA_BROADCAST_ADDRESS: "127.0.0.1"
+    volumes:
+      - cassandra_data_2:/var/lib/cassandra
+    healthcheck:
+      test: [ "CMD", "cqlsh", "-e", "DESCRIBE KEYSPACES" ]
+      interval: 30s
+      retries: 3
+    networks:
+      - surge_pricing_network
+
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.3.2
+    container_name: zookeeper
+    environment:
+      - ZOOKEEPER_CLIENT_PORT=2181
+      - ZOOKEEPER_TICK_TIME=2000
+    ports:
+      - "2181:2181"
+    networks:
+      - surge_pricing_network
+
+  kafka:
+    image: confluentinc/cp-kafka:5.5.1
+    container_name: kafka5
+    environment:
+      - KAFKA_LISTENERS=PLAINTEXT://kafka:29092,PLAINTEXT_HOST://localhost:9092
+      - KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://kafka:29092,PLAINTEXT_HOST://localhost:9092
+      - KAFKA_LISTENER_SECURITY_PROTOCOL_MAP= PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      - KAFKA_LISTENER_NAME=PLAINTEXT
+      - KAFKA_LISTENER_PORT=9092
+      - KAFKA_LISTENER_INTER_BROKER_PROTOCOL=PLAINTEXT
+      - KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181
+      - KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR=1
+    ports:
+      - '9092:9092'
+      - '29092:29092'
+    depends_on:
+      - zookeeper
+    networks:
+      - surge_pricing_network
+
+  producer:
+    build: .
+    container_name: producer
+    depends_on:
+      - kafka
+    networks:
+      - surge_pricing_network
+    environment:
+      - DRIVER_POSITION_KAFKA_TOPIC=driver_position_stream
+      - ORDERS_KAFKA_TOPIC=orders_stream
+      - KAFKA_BROKER=kafka:29092
+      - PYTHONUNBUFFERED=1
+      - PYTHONPATH=/app
+    command: bash -c "/app/start_kafka_producer.sh"
+    volumes:
+      - .:/app
+
+  spark-master:
+    image: bitnami/spark:3.5.1
+    container_name: spark-master
+    hostname: spark-master
+    environment:
+      - SPARK_MODE=master
+      - SPARK_MASTER_HOST=spark-master
+      - SPARK_MASTER_PORT=7077
+      - DRIVER_POSITION_KAFKA_TOPIC=driver_position_stream
+      - ORDERS_KAFKA_TOPIC=orders_stream
+      - KAFKA_BROKER=kafka:29092
+      - REDIS_HOST=redis
+      - REDIS_PORT:6379
+    working_dir: /app
+    ports:
+      - "8080:8080"  # Spark Web UI
+      - "7077:7077"  # Spark Master Port
+    command: bash -c "/app/start_spark_master.sh"
+    volumes:
+      - .:/app
+    networks:
+      - surge_pricing_network
+    user: root
+
+  spark-worker:
+    image: bitnami/spark:3.5.1
+    container_name: spark-worker
+    hostname: spark-worker
+    environment:
+      - SPARK_MODE=worker
+      - SPARK_MASTER_URL=spark://spark-master:7077
+      - DRIVER_POSITION_KAFKA_TOPIC=driver_position_stream
+      - ORDERS_KAFKA_TOPIC=orders_stream
+      - KAFKA_BROKER=kafka:29092
+      - REDIS_HOST=redis
+      - REDIS_PORT:6379
+    command: bash -c "/app/start_spark_worker.sh"
+    volumes:
+      - .:/app
+    working_dir: /app
+    user: root
+    depends_on:
+      - spark-master
+    networks:
+      - surge_pricing_network
+
+
+  redis:
+    image: redis:latest
+    container_name: redis
+    ports:
+      - "6379:6379"
+    networks:
+      - surge_pricing_network
+
+networks:
+  surge_pricing_network:
+    name: surge_pricing_network
+    driver: bridge
+
+volumes:
+  cassandra_data_2:

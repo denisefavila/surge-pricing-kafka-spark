@@ -86,6 +86,20 @@ services:
     volumes:
       - .:/app
 
+  logstash:
+    image: docker.elastic.co/logstash/logstash:8.10.1
+    container_name: logstash
+    ports:
+      - "5044:5044"
+      - "9600:9600"
+    volumes:
+      - ./logstash/pipeline:/usr/share/logstash/pipeline
+      - ./logstash/config:/usr/share/logstash/config
+    depends_on:
+      - elasticsearch
+    networks:
+      - surge_pricing_network
+
   spark-master:
     image: bitnami/spark:3.5.1
     container_name: spark-master
@@ -132,7 +146,6 @@ services:
     networks:
       - surge_pricing_network
 
-
   redis:
     image: redis:latest
     container_name: redis
@@ -141,8 +154,18 @@ services:
     networks:
       - surge_pricing_network
 
+  filebeat:
+    image: docker.elastic.co/beats/filebeat:7.17.1
+    user: root
+    volumes:
+      - ./filebeat.yml:/usr/share/filebeat/filebeat.yml:ro
+      - ./logs:/app/logs:ro
+    command: filebeat -e
+    networks:
+      - surge_pricing_network
+
   elasticsearch:
-    container_name: es01
+    container_name: elasticsearch
     image: docker.elastic.co/elasticsearch/elasticsearch:7.17.1
     environment: [ 'ES_JAVA_OPTS=-Xms2g -Xmx2g','bootstrap.memory_lock=true','discovery.type=single-node' ]
     ports:
@@ -156,14 +179,16 @@ services:
       nofile:
         soft: 65536
         hard: 65536
+    volumes:
+      - elasticsearch_data:/usr/share/elasticsearch/data
 
   kibana:
     image: docker.elastic.co/kibana/kibana:7.17.1
-    container_name: kib01
+    container_name: kibana
     environment:
-      XPACK_APM_SERVICEMAPENABLED: "true"
-      XPACK_ENCRYPTEDSAVEDOBJECTS_ENCRYPTIONKEY: d1a66dfd-c4d3-4a0a-8290-2abcb83ab3aa
-      LOGGING_ROOT_LEVEL: error
+      - "xpack.security.authc.http.enabled=false"
+      - "XPACK_APM_SERVICEMAPENABLED=true"
+      - "XPACK_ENCRYPTEDSAVEDOBJECTS_ENCRYPTIONKEY=d1a66dfd-c4d3-4a0a-8290-2abcb83ab3aa"
     ports:
       - 5601:5601
     networks:
@@ -176,3 +201,5 @@ networks:
 
 volumes:
   cassandra_data_2:
+  elasticsearch_data:
+  app_logs:

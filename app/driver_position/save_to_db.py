@@ -1,21 +1,22 @@
-import logging
 import os
 import uuid
 from datetime import datetime
 
 from app.consumers.save_to_db import KafkaConsumerWrapper
+from app.logging_utils import setup_logger
 
-logging.basicConfig(
-    level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
+ELASTICSEARCH_DRIVER_POSITION_INDEX = os.getenv(
+    "ELASTICSEARCH_DRIVER_POSITION_INDEX", "driver_position_logs"
 )
-logger = logging.getLogger(__name__)
 
-
+# Cassandra table and Kafka settings
 CASSANDRA_DRIVER_POSITION_TABLE = os.getenv(
     "CASSANDRA_DRIVER_POSITION_TABLE", "driver_position"
 )
-
 GROUP_ID = "driver_position_group"
+
+# Setup logger with Elasticsearch logging
+logger = setup_logger(ELASTICSEARCH_DRIVER_POSITION_INDEX)
 
 
 class DriverPositionConsumer(KafkaConsumerWrapper):

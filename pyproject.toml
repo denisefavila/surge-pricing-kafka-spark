@@ -19,6 +19,7 @@ branca = "^0.8.1"
 cassandra-driver = "^3.29.2"
 kafka-python = "^2.0.2"
 pyspark = "^3.5.3"
+elasticsearch = "^8.17.0"
 
 
 [build-system]

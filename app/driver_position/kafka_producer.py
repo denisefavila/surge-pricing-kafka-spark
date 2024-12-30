@@ -5,10 +5,10 @@ import signal
 from app.driver_position.generate_data import generate_driver_position
 from app.kafka_stream.kafka_producer import (KafkaProducerWrapper,
                                              signal_handler)
+from app.logging_utils import setup_logging
 
-logging.basicConfig(
-    level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
-)
+setup_logging()
+
 logger = logging.getLogger(__name__)
 
 shutdown_flag = False

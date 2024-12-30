@@ -7,15 +7,16 @@ import time
 from dotenv import load_dotenv
 from kafka import KafkaProducer
 
+from app.logging_utils import setup_logging
+
 load_dotenv()
 
 PRODUCE_INTERVAL = float(os.getenv("PRODUCE_INTERVAL", 1.0))
 KAFKA_BROKER = os.getenv("KAFKA_BROKER", "localhost:9092")
 KAFKA_TOPIC = os.getenv("KAFKA_TOPIC", "default_topic")
 
-logging.basicConfig(
-    level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
-)
+setup_logging()
+
 logger = logging.getLogger(__name__)
 
 shutdown_flag = False
@@ -55,7 +56,8 @@ class KafkaProducerWrapper:
         global shutdown_flag
         try:
             while not shutdown_flag:
-                data = self.generate_data_callback()
+                schema = self.generate_data_callback()
+                data = schema.to_dict()
                 key = self.key_callback(data) if self.key_callback else None
 
                 try:

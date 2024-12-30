@@ -1,7 +1,5 @@
 import os
 
-import redis
-
 from app.kafka_stream.structures_streaming import KafkaStructuredStreaming
 
 if __name__ == "__main__":

@@ -4,6 +4,7 @@ TIME_WINDOW_MINUTES = 5
 
 DRIVER_COUNT_KEY = "driver_count_by_region"
 
+
 class DriverPositionAggregator(DataAggregator):
     def __init__(self, redis_client, time_window_minutes=TIME_WINDOW_MINUTES):
         super().__init__(

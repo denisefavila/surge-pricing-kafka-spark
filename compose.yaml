@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   app:
-    build: ./Dockerfile
+    build: .
     container_name: app
     ports:
       - 8000:8000
@@ -12,6 +12,8 @@ services:
       - REDIS_HOST=redis
       - PYTHONUNBUFFERED=1
     command: bash -c "/app/start_services.sh"
+    depends_on:
+      - kafka
     volumes:
       - .:/app  # Map the current directory to /app in the container
 
@@ -136,6 +138,34 @@ services:
     container_name: redis
     ports:
       - "6379:6379"
+    networks:
+      - surge_pricing_network
+
+  elasticsearch:
+    container_name: es01
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.17.1
+    environment: [ 'ES_JAVA_OPTS=-Xms2g -Xmx2g','bootstrap.memory_lock=true','discovery.type=single-node' ]
+    ports:
+      - 9200:9200
+    networks:
+      - surge_pricing_network
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+      nofile:
+        soft: 65536
+        hard: 65536
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:7.17.1
+    container_name: kib01
+    environment:
+      XPACK_APM_SERVICEMAPENABLED: "true"
+      XPACK_ENCRYPTEDSAVEDOBJECTS_ENCRYPTIONKEY: d1a66dfd-c4d3-4a0a-8290-2abcb83ab3aa
+      LOGGING_ROOT_LEVEL: error
+    ports:
+      - 5601:5601
     networks:
       - surge_pricing_network
 

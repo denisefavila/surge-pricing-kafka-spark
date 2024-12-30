@@ -3,7 +3,6 @@ import logging
 from fastapi import FastAPI
 from fastapi.middleware.wsgi import WSGIMiddleware
 
-from app.dash_app import app_dash
 from app.driver_position.endpoints import \
     router as driver_position_count_router
 
@@ -26,4 +25,4 @@ app.include_router(
     tags=["driver_position_count"],
 )
 
-app.mount("/dash", WSGIMiddleware(app_dash.server))
+# app.mount("/dash", WSGIMiddleware(app_dash.server))

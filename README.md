@@ -10,9 +10,10 @@ This project focuses on implementing a surge pricing model by simulating pricing
 
 - **Real-time Visualization**  
   Displays driver and order positions using **ElasticSearch** and **Kibana**.
-  Driver Positions Real Time Visualization
+
+  #### Driver Positions Real-Time Visualization
   <div style="text-align: center;">
-    <img width="600" alt="Captura de Tela 2025-01-03 às 11 06 47" src="https://github.com/user-attachments/assets/d49c80e4-ea83-4188-b072-f4b58b7252da" />
+    <img width="600" alt="Driver Positions Visualization" src="https://github.com/user-attachments/assets/d49c80e4-ea83-4188-b072-f4b58b7252da" />
   </div>
 
 

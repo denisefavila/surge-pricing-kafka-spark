@@ -57,6 +57,8 @@ class KafkaProducerWrapper:
         try:
             while not shutdown_flag:
                 schema = self.generate_data_callback()
+                if not schema:
+                    continue
                 data = schema.to_dict()
                 key = self.key_callback(data) if self.key_callback else None
 

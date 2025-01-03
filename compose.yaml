@@ -86,65 +86,65 @@ services:
     volumes:
       - .:/app
 
-  logstash:
-    image: docker.elastic.co/logstash/logstash:8.10.1
-    container_name: logstash
-    ports:
-      - "5044:5044"
-      - "9600:9600"
-    volumes:
-      - ./logstash/pipeline:/usr/share/logstash/pipeline
-      - ./logstash/config:/usr/share/logstash/config
-    depends_on:
-      - elasticsearch
-    networks:
-      - surge_pricing_network
+#  logstash:
+#    image: docker.elastic.co/logstash/logstash:8.10.1
+#    container_name: logstash
+#    ports:
+#      - "5044:5044"
+#      - "9600:9600"
+#    volumes:
+#      - ./logstash/pipeline:/usr/share/logstash/pipeline
+#      - ./logstash/config:/usr/share/logstash/config
+#    depends_on:
+#      - elasticsearch
+#    networks:
+#      - surge_pricing_network
 
-  spark-master:
-    image: bitnami/spark:3.5.1
-    container_name: spark-master
-    hostname: spark-master
-    environment:
-      - SPARK_MODE=master
-      - SPARK_MASTER_HOST=spark-master
-      - SPARK_MASTER_PORT=7077
-      - DRIVER_POSITION_KAFKA_TOPIC=driver_position_stream
-      - ORDERS_KAFKA_TOPIC=orders_stream
-      - KAFKA_BROKER=kafka:29092
-      - REDIS_HOST=redis
-      - REDIS_PORT:6379
-    working_dir: /app
-    ports:
-      - "8080:8080"  # Spark Web UI
-      - "7077:7077"  # Spark Master Port
-    command: bash -c "/app/start_spark_master.sh"
-    volumes:
-      - .:/app
-    networks:
-      - surge_pricing_network
-    user: root
-
-  spark-worker:
-    image: bitnami/spark:3.5.1
-    container_name: spark-worker
-    hostname: spark-worker
-    environment:
-      - SPARK_MODE=worker
-      - SPARK_MASTER_URL=spark://spark-master:7077
-      - DRIVER_POSITION_KAFKA_TOPIC=driver_position_stream
-      - ORDERS_KAFKA_TOPIC=orders_stream
-      - KAFKA_BROKER=kafka:29092
-      - REDIS_HOST=redis
-      - REDIS_PORT:6379
-    command: bash -c "/app/start_spark_worker.sh"
-    volumes:
-      - .:/app
-    working_dir: /app
-    user: root
-    depends_on:
-      - spark-master
-    networks:
-      - surge_pricing_network
+#  spark-master:
+#    image: bitnami/spark:3.5.1
+#    container_name: spark-master
+#    hostname: spark-master
+#    environment:
+#      - SPARK_MODE=master
+#      - SPARK_MASTER_HOST=spark-master
+#      - SPARK_MASTER_PORT=7077
+#      - DRIVER_POSITION_KAFKA_TOPIC=driver_position_stream
+#      - ORDERS_KAFKA_TOPIC=orders_stream
+#      - KAFKA_BROKER=kafka:29092
+#      - REDIS_HOST=redis
+#      - REDIS_PORT:6379
+#    working_dir: /app
+#    ports:
+#      - "8080:8080"  # Spark Web UI
+#      - "7077:7077"  # Spark Master Port
+#    command: bash -c "/app/start_spark_master.sh"
+#    volumes:
+#      - .:/app
+#    networks:
+#      - surge_pricing_network
+#    user: root
+#
+#  spark-worker:
+#    image: bitnami/spark:3.5.1
+#    container_name: spark-worker
+#    hostname: spark-worker
+#    environment:
+#      - SPARK_MODE=worker
+#      - SPARK_MASTER_URL=spark://spark-master:7077
+#      - DRIVER_POSITION_KAFKA_TOPIC=driver_position_stream
+#      - ORDERS_KAFKA_TOPIC=orders_stream
+#      - KAFKA_BROKER=kafka:29092
+#      - REDIS_HOST=redis
+#      - REDIS_PORT:6379
+#    command: bash -c "/app/start_spark_worker.sh"
+#    volumes:
+#      - .:/app
+#    working_dir: /app
+#    user: root
+#    depends_on:
+#      - spark-master
+#    networks:
+#      - surge_pricing_network
 
   redis:
     image: redis:latest
@@ -180,7 +180,7 @@ services:
         soft: 65536
         hard: 65536
     volumes:
-      - elasticsearch_data:/usr/share/elasticsearch/data
+      - elasticsearch_data:/usr/share/elasticsearch/data_elastic
 
   kibana:
     image: docker.elastic.co/kibana/kibana:7.17.1

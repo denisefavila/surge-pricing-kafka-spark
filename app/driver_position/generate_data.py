@@ -19,7 +19,6 @@ def generate_driver_position():
     longitude = random.uniform(BH_LON_MIN, BH_LON_MAX)
     h3_cell = h3.latlng_to_cell(latitude, longitude, 7)  # Resolution 7 H3 cell
 
-    # Return the DriverPositionLog instance
     return DriverPosition(
         driver_id=driver_id,
         latitude=latitude,

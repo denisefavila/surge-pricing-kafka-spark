@@ -1,15 +1,24 @@
 Surge Pricing
-Overview
+## Overview
 
-This project is focused on implementing a surge pricing model, simulating pricing adjustments based on demand 
-fluctuations, using Kafka and a Spark cluster for aggregations.
+This project focuses on implementing a surge pricing model by simulating pricing adjustments based on demand fluctuations. The solution uses **Kafka** and a **Spark cluster** for data aggregations.
 
-Features
-    Driver Position simulator.
-    Real time visualization for Drivers Positions and Orders Positions with ElasticSearch + Kibana.
-    Dynamic pricing logic: Adjusts prices based on factors such as demand and supply.
-    Real-time data processing: Utilizes Python for backend operations.
-    Dockerized environment: Easily deployable using Docker.
+## Features
+
+- **Driver Position Simulator**  
+  Simulates driver locations in real-time.
+
+- **Real-time Visualization**  
+  Displays driver and order positions using **ElasticSearch** and **Kibana**.
+
+- **Dynamic Pricing Logic**  
+  Adjusts prices dynamically based on factors such as demand and supply.
+
+- **Real-time Data Processing**  
+  Utilizes **Python** for backend operations.
+
+- **Dockerized Environment**  
+  Easily deployable using **Docker**.
 
 
 Driver Positions Real Time Visualization

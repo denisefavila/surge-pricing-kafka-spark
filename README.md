@@ -4,7 +4,7 @@ Overview
 This project is focused on implementing a surge pricing model, simulating pricing adjustments based on demand 
 fluctuations, using Kafka and a Spark cluster for aggregations.
 Features
-
+    Real time visualization for Drivers Positions and Orders Positions with ElasticSearch + Kibana.
     Dynamic pricing logic: Adjusts prices based on factors such as demand and supply.
     Real-time data processing: Utilizes Python for backend operations.
     Dockerized environment: Easily deployable using Docker.

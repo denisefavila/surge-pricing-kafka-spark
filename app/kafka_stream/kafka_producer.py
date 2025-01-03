@@ -11,7 +11,7 @@ from app.logging_utils import setup_logging
 
 load_dotenv()
 
-PRODUCE_INTERVAL = float(os.getenv("PRODUCE_INTERVAL", 1.0))
+PRODUCE_INTERVAL = float(os.getenv("PRODUCE_INTERVAL", 0.05))
 KAFKA_BROKER = os.getenv("KAFKA_BROKER", "localhost:9092")
 KAFKA_TOPIC = os.getenv("KAFKA_TOPIC", "default_topic")
 

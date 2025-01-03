@@ -194,6 +194,22 @@ services:
     networks:
       - surge_pricing_network
 
+  db_consumer:
+    build: .
+    container_name: db_consumer
+    depends_on:
+      - kafka
+    networks:
+      - surge_pricing_network
+    environment:
+      - DRIVER_POSITION_KAFKA_TOPIC=driver_position_stream
+      - ORDERS_KAFKA_TOPIC=orders_stream
+      - KAFKA_BROKER=kafka:29092
+      - PYTHONUNBUFFERED=1
+      - PYTHONPATH=/app
+    command: bash -c "/app/start_db_consumer.sh"
+    volumes:
+      - .:/app
 networks:
   surge_pricing_network:
     name: surge_pricing_network

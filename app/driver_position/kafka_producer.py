@@ -1,7 +1,6 @@
 import logging
 import os
 import signal
-import uuid
 
 from app.driver_position.driver_position_simulator import \
     DriverPositionSimulator

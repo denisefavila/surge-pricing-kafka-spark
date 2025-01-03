@@ -3,7 +3,7 @@ from pyspark.sql.functions import col, from_json, window
 from pyspark.sql.types import (FloatType, StringType, StructField, StructType,
                                TimestampType)
 
-from app.redis_stream.redis_client import redis_client
+from app.redis.redis_client import redis_client
 
 
 class KafkaStructuredStreaming:

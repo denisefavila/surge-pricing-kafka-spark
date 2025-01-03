@@ -58,9 +58,10 @@ class DriverPositionConsumer(KafkaConsumerWrapper):
                     data.get("timestamp"), "%Y-%m-%dT%H:%M:%S.%f"
                 )
 
-                self.session.execute(
-                    insert_query, (driver_id, latitude, longitude, timestamp)
-                )
+                # For now, dont save on Cassandra, just log
+                # self.session.execute(
+                #     insert_query, (driver_id, latitude, longitude, timestamp)
+                # )
                 logger.info(
                     "[DriverPosition] Sent",
                     extra={

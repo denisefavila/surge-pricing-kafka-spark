@@ -8,7 +8,6 @@ def create_kafka_topic(
     admin_client = KafkaAdminClient(
         bootstrap_servers=bootstrap_servers, api_version=(2.4)
     )
-    print("HEEEEYYYYYYY")
     topic = NewTopic(
         name=topic_name,
         num_partitions=num_partitions,

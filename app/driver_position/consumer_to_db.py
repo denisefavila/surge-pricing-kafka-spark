@@ -1,6 +1,6 @@
 import logging
 
-from app.driver_position.save_to_db import DriverPositionConsumer
+from app.driver_position.kafka_consumer_to_db import DriverPositionConsumer
 
 logging.basicConfig(
     level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"

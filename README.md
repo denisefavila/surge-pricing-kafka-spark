@@ -8,7 +8,7 @@ This project focuses on implementing a surge pricing model by simulating pricing
 - **Driver Position Simulator**  
   Simulates driver locations in real-time.
 
-- **Real-time Visualization**  
+- **Positions Real-time Visualization**  
   Displays driver and order positions using **ElasticSearch** and **Kibana**.
 
   #### Driver Positions Real-Time Visualization

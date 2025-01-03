@@ -1,4 +1,4 @@
-Surge Pricing
+# Surge Pricing
 ## Overview
 
 This project focuses on implementing a surge pricing model by simulating pricing adjustments based on demand fluctuations. The solution uses **Kafka** and a **Spark cluster** for data aggregations.

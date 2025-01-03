@@ -1,7 +1,7 @@
 # Surge Pricing
 ## Overview
 
-This project focuses on implementing a surge pricing model by simulating pricing adjustments based on demand fluctuations. The solution uses **Kafka** and a **Spark cluster** for data aggregations.
+This project focuses on implementing a surge pricing model by simulating pricing adjustments based on demand fluctuations. The solution utilizes Kafka for stream processing and integrates with a Spark cluster for real-time data aggregation. For real-time visualizations and geolocation-based searches, ElasticSearch and Kibana are incorporated, enabling tracking and analysis of driver and order positions. Filebeat is used to collect and ship logs to ElasticSearch. To persist positions, Cassandra is employed as the database, providing high availability and scalability for storing driver and order location data.
 
 ## Features
 
